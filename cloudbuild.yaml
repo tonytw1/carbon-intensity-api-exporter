@@ -1,5 +1,7 @@
 steps:
 - name: 'gcr.io/cloud-builders/go'
+  args: ['get', 'github.com/prometheus/client_golang/prometheus', 'github.com/prometheus/client_golang/prometheus/promauto', 'github.com/prometheus/client_golang/prometheus/promhttp']
+- name: 'gcr.io/cloud-builders/go'
   args: ['install', '.']
   env: ['PROJECT_ROOT=carbon-intensity-api-exporter']
 - name: 'gcr.io/cloud-builders/go'
