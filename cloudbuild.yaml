@@ -1,13 +1,4 @@
 steps:
-- name: 'gcr.io/cloud-builders/go'
-  args: ['get', 'github.com/prometheus/client_golang/prometheus', 'github.com/prometheus/client_golang/prometheus/promauto', 'github.com/prometheus/client_golang/prometheus/promhttp']
-  env: ['PROJECT_ROOT=carbon-intensity-api-exporter']
-- name: 'gcr.io/cloud-builders/go'
-  args: ['install', '.']
-  env: ['PROJECT_ROOT=carbon-intensity-api-exporter']
-- name: 'gcr.io/cloud-builders/go'
-  args: ['build', 'carbon-intensity-api-exporter']
-  env: ['PROJECT_ROOT=carbon-intensity-api-exporter']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/carbon-intensity-api-exporter', '.']
 - name: 'gcr.io/cloud-builders/docker'
