@@ -47,7 +47,7 @@ func fetch() {
 		for {
 			err := update()
 			if err != nil {
-				log.Fatal("Error while updating: ", err)
+				log.Print("Error while updating: ", err)
 			}
 			time.Sleep(60 * time.Second)
 		}
