@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -46,7 +47,7 @@ func fetch() {
 		for {
 			err := update()
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("Error while updating: ", err)
 			}
 			time.Sleep(60 * time.Second)
 		}
@@ -74,6 +75,7 @@ func update() error {
 }
 
 func httpGet(url string) ([]byte, error) {
+	log.Print("Fetching from " + url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -93,6 +95,8 @@ func httpGet(url string) ([]byte, error) {
 }
 
 func main() {
+	log.SetOutput(os.Stdout)
+
 	fetch()
 
 	minimalRegistry := prometheus.NewRegistry()
