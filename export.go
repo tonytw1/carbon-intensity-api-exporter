@@ -76,6 +76,9 @@ func fetch() {
 func main() {
 	fetch()
 
-	http.Handle("/metrics", promhttp.Handler())
+	minimalRegistry := prometheus.NewRegistry()
+	minimalRegistry.MustRegister(currentIntensity)
+	handler := promhttp.HandlerFor(minimalRegistry, promhttp.HandlerOpts{})
+	http.Handle("/metrics", handler)
 	http.ListenAndServe(":8080", nil)
 }
