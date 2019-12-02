@@ -79,6 +79,6 @@ func main() {
 	minimalRegistry := prometheus.NewRegistry()
 	minimalRegistry.MustRegister(currentIntensity)
 	handler := promhttp.HandlerFor(minimalRegistry, promhttp.HandlerOpts{})
-	http.Handle("/metrics", handler)
+	http.Handle("/", handler)
 	http.ListenAndServe(":8080", nil)
 }
