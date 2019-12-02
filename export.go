@@ -16,6 +16,10 @@ var (
 		Name: "actual_intensity",
 		Help: "Actual intensity ",
 	})
+	forecastIntensity = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "forecast_intensity",
+		Help: "Forecast intensity ",
+	})
 )
 
 func fetch() {
@@ -65,8 +69,11 @@ func fetch() {
 				log.Fatal(err)
 			}
 
-			data := current.Data[0]
-			currentIntensity.Set(float64(data.Intensity.Actual))
+			if len(current.Data) > 0 {
+				data := current.Data[0]
+				currentIntensity.Set(float64(data.Intensity.Actual))
+				forecastIntensity.Set(float64(data.Intensity.Forecast))
+			}
 
 			time.Sleep(60 * time.Second)
 		}
@@ -77,7 +84,7 @@ func main() {
 	fetch()
 
 	minimalRegistry := prometheus.NewRegistry()
-	minimalRegistry.MustRegister(currentIntensity)
+	minimalRegistry.MustRegister(currentIntensity, forecastIntensity)
 	handler := promhttp.HandlerFor(minimalRegistry, promhttp.HandlerOpts{})
 	http.Handle("/", handler)
 	http.ListenAndServe(":8080", nil)
