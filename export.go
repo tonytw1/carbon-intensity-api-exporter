@@ -26,6 +26,10 @@ var (
 	})
 )
 
+var client = http.Client{
+	Timeout: time.Second * 5,
+}
+
 type Intensity struct {
 	Forecast int
 	Actual   int
@@ -80,9 +84,7 @@ func httpGet(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	client := http.Client{
-		Timeout: time.Second * 5,
-	}
+
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
