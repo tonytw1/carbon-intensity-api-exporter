@@ -14,6 +14,8 @@ import (
 )
 
 const apiUrl = "https://api.carbonintensity.org.uk"
+const currentIntensityUrl = apiUrl + "/intensity"
+const pollingInterval = 5 * time.Minute
 
 var (
 	currentIntensity = promauto.NewGauge(prometheus.GaugeOpts{
@@ -27,7 +29,7 @@ var (
 )
 
 var client = http.Client{
-	Timeout: time.Second * 5,
+	Timeout: time.Second * 10,
 }
 
 type Intensity struct {
@@ -46,21 +48,20 @@ type IntensityData struct {
 	Data []Data
 }
 
-func fetch() {
+func poll() {
 	go func() {
 		for {
 			err := update()
 			if err != nil {
 				log.Print("Error while updating: ", err)
 			}
-			time.Sleep(60 * time.Second)
+			time.Sleep(pollingInterval)
 		}
 	}()
 }
 
 func update() error {
-	currentIntensityUrl := apiUrl + "/intensity"
-	body, err := httpGet(currentIntensityUrl)
+	body, err := fetch(currentIntensityUrl)
 	if err != nil {
 		return err
 	}
@@ -78,7 +79,7 @@ func update() error {
 	return nil
 }
 
-func httpGet(url string) ([]byte, error) {
+func fetch(url string) ([]byte, error) {
 	log.Print("Fetching from " + url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -99,10 +100,11 @@ func httpGet(url string) ([]byte, error) {
 func main() {
 	log.SetOutput(os.Stdout)
 
-	fetch()
-
 	minimalRegistry := prometheus.NewRegistry()
 	minimalRegistry.MustRegister(currentIntensity, forecastIntensity)
+
+	poll()
+
 	handler := promhttp.HandlerFor(minimalRegistry, promhttp.HandlerOpts{})
 	http.Handle("/", handler)
 	http.ListenAndServe(":8080", nil)
