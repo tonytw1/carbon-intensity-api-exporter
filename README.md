@@ -6,7 +6,7 @@ Exports [UK Carbon Intensity API](https://carbonintensity.org.uk/) readings in P
 ### Build and run locally
 
 ```
-https://github.com/tonytw1/carbon-intensity-api-exporter.git
+git clone https://github.com/tonytw1/carbon-intensity-api-exporter.git
 
 go get -d -v ./...
 go install -v  ./...
@@ -27,4 +27,11 @@ docker run -p 8080:8080 eu.gcr.io/eelpie-public/carbon-intensity-api-exporter
 
 ```
 http://localhost:8080
+
+# HELP actual_intensity Actual intensity 
+# TYPE actual_intensity gauge
+actual_intensity 206
+# HELP forecast_intensity Forecast intensity 
+# TYPE forecast_intensity gauge
+forecast_intensity 204
 ```
