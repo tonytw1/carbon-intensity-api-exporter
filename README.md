@@ -22,6 +22,14 @@ docker pull eu.gcr.io/eelpie-public/carbon-intensity-api-exporter
 docker run -p 8080:8080 eu.gcr.io/eelpie-public/carbon-intensity-api-exporter
 ```
 
+### Scrape public target
+
+```
+- job_name: 'carbon-intensity'
+  static_configs:
+  - targets: ['carbon-intensity.eelpieconsulting.co.uk']
+  scrape_interval: 60s
+```
 
 ### Sample output
 
